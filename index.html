@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Game</title>
+    <style>
+        canvas {
+            border: 1px solid black;
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <div id="instructions"></div>
+    <script src="game.js"></script>
+</body>
+</html>
+JavaScript (game.js):
+
+javascript
+Copiar código
+document.addEventListener("DOMContentLoaded", function() {
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Calculating key bindings based on group member numbers
+    const groupNumbers = [5, 7, 11, 13, 29];
+    const sum = groupNumbers.reduce((acc, curr) => acc + curr, 0);
+    const remainder = sum % 5;
+
+    // Key bindings based on remainder
+    let controls;
+    switch(remainder) {
+        case 0:
+            controls = {
+                left: 'a',
+                right: 'd',
+                shoot: 'ArrowUp'
+            };
+            break;
+        case 1:
+            controls = {
+                left: 'z',
+                right: 'c',
+                shoot: 'ArrowDown'
+            };
+            break;
+        case 2:
+            controls = {
+                left: 'q',
+                right: 'e',
+                shoot: 'ArrowRight'
+            };
+            break;
+        case 3:
+            controls = {
+                left: 's',
+                right: 'f',
+                shoot: 'ArrowLeft'
+            };
+            break;
+        case 4:
+            controls = {
+                left: 'x',
+                right: 'v',
+                shoot: ' '
+            };
+            break;
+        default:
+            // Default key bindings
+            controls = {
+                left: 'ArrowLeft',
+                right: 'ArrowRight',
+                shoot: 'ArrowUp'
+            };
+    }
+
+    // Displaying key bindings on the HTML
+    document.getElementById('instructions').innerHTML = `
+        <p>Tecla para esquerda: ${controls.left}</p>
+        <p>Tecla para direita: ${controls.right}</p>
+        <p>Tecla para tiro: ${controls.shoot}</p>
+    `;
+
+    // Nave properties
+    let ship = {
+        x: canvas.width / 2,
+        y: canvas.height - 50,
+        width: 50,
+        height: 50,
+        speed: 5
+    };
+
+    // Key state
+    const keys = {};
+
+    // Event listeners for keydown and keyup events
+    document.addEventListener('keydown', function(event) {
+        keys[event.key] = true;
+    });
+    document.addEventListener('keyup', function(event) {
+        keys[event.key] = false;
+    });
+
+    // Update function for the game
+    function update() {
+        // Move ship based on keys
+        if (keys[controls.left] && ship.x > 0) {
+            ship.x -= ship.speed;
+        }
+        if (keys[controls.right] && ship.x < canvas.width - ship.width) {
+            ship.x += ship.speed;
+        }
+        if (keys[controls.shoot]) {
+            // Implement shooting logic here
+        }
+
+        // Clear canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Draw ship
+        ctx.fillStyle = 'blue';
+        ctx.fillRect(ship.x, ship.y, ship.width, ship.height);
+
+        requestAnimationFrame(update);
+    }
+
+    update(); // Start the game loop
+});
